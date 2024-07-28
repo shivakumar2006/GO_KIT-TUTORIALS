@@ -2,7 +2,8 @@ package account
 
 import (
 	"context"
-	"log"
+
+	"github.com/go-kit/kit/log"
 )
 
 type service struct {

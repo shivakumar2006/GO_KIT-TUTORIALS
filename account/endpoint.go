@@ -1,7 +1,7 @@
 package account
 
 import (
-	"endpoint"
+	"github.com/go-kit/kit/endpoint"
 )
 
 type Endpoints struct {
