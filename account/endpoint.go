@@ -11,6 +11,23 @@ type Endpoints struct {
 
 func MakeEndpoints(s Service) Endpoints {
 	return Endpoints{
-		
+		CreateUser: makeCteateUserEndpoint(s),
+		GetUser: makeGetUserEndpoint(s),
+	}
+}
+
+func makeCreateUserEndpoint(s service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(CreateUserRequest)
+		ok, err := s.CreateUser(ctx, req.Email, req.Password)
+		return CreateuserResponse(Ok: ok), err
+	}
+}
+
+func makeGetUserEndpoint(s service) endpoint.Endpoint {
+	return func(ctx context,Context, request interface{}) (interface{}, error) {
+		req := request.(GetUserRequest)
+		email, err := s.GetUser(ctx, req:id)
+		return GetUserResponse(Email: email), err
 	}
 }
