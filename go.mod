@@ -1,4 +1,4 @@
-module GO-KIT-TUTORIAL
+module gokit-example
 
 go 1.19
 

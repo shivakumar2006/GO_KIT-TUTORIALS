@@ -2,14 +2,19 @@ package main
 
 import(
 	"database/sql"
-	// "github.com/go-kit/kit/log"
+	"context"
 	"log"
 	"flag"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-kit/kit/log/level"
+	"github.com/go-kit/kit/log"
 	"os"
-	// "net/http"
+	"syscall"
+	"os/signal"
+	"net/http"
+
+	"gokit-example/account"
 )
 
 
@@ -59,6 +64,31 @@ func main() {
 
 
 	defer level.Info(logger).Log("msg", "service stopped")
+
+	flag.Parse()
+	ctx := context.Background()
+	var srv account.Service
+	{
+		repository := account.NewRepo(db, logger)
+		srv = account.NewService(repository, logger)
+	}
+
+	errs = make(chan error)
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+		errs <- fmt.Error("%s", <-c)
+	}()
+
+	endpoints := account.MakeEndpoints(srv)
+
+	go func() {
+		fmt.Println("Listening on port", *httpAddr)
+		handler := account.NewHTTPServer(ctx, endpoints)
+		errs <- http.ListenAndServe(*httpAddr, handler)
+	}()
+
+	level.Error(logger).Log("exit", <-errs)
 	
 	
  }
@@ -66,3 +96,4 @@ func main() {
 // func getHealth(w http.ResponseWriter, r *http.Request) (string) {
 // 	return "200 OK"
 //  }
+
