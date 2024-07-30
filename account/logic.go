@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
+	"github.com/gofrs/uuid"
 )
 
 type service struct {
@@ -30,13 +32,14 @@ func (s service) CreateUser(ctx context.Context, email string, password string) 
 	}
 
 	if err := s.repository.CreateUser(ctx, user); err != nil {
-		level.Error(logger).log("err", err)
+		level.Error(logger).Log("err", err)
 		return "", err
-
+	}
 		logger.Log("create user", id)
 
 		return "Success", nil
-	}
+	
+
 }
 
 func (s service) GetUser(ctx context.Context, id string) (string, error) {
@@ -45,7 +48,7 @@ func (s service) GetUser(ctx context.Context, id string) (string, error) {
 	email, err := s.repository.GetUser(ctx, id)
 
 	if err != nil {
-		level.Error(logger).log("err", err)
+		level.Error(logger).Log("err", err)
 		return "", err
 	}
 	logger.Log("GetUser", id)

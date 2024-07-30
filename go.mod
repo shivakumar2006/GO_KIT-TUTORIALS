@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/go-kit/kit v0.9.0
 	github.com/go-sql-driver/mysql v1.8.1
+	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/gorilla/mux v1.8.1
 )
 

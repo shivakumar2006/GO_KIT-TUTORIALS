@@ -1,6 +1,8 @@
 package account
 
 import (
+	"context"
+
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -11,8 +13,8 @@ type Endpoints struct {
 
 func MakeEndpoints(s Service) Endpoints {
 	return Endpoints{
-		CreateUser: makeCteateUserEndpoint(s),
-		GetUser: makeGetUserEndpoint(s),
+		CreateUser: makeCreateUserEndpoint(s),
+		GetUser:    makeGetUserEndpoint(s),
 	}
 }
 
@@ -20,14 +22,14 @@ func makeCreateUserEndpoint(s service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateUserRequest)
 		ok, err := s.CreateUser(ctx, req.Email, req.Password)
-		return CreateuserResponse(Ok: ok), err
+		return CreateUserResponse{Ok: ok}, err
 	}
 }
 
 func makeGetUserEndpoint(s service) endpoint.Endpoint {
-	return func(ctx context,Context, request interface{}) (interface{}, error) {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetUserRequest)
-		email, err := s.GetUser(ctx, req:id)
-		return GetUserResponse(Email: email), err
+		email, err := s.GetUser(ctx, req.ID)
+		return GetUserResponse{Email: email}, err
 	}
 }

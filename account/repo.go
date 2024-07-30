@@ -28,7 +28,7 @@ func (repo*repo) CreateUser(ctx context.Context, user User) error {
 		return RepoErr
 	}
 
-	_, err := repo.db.ExecContext(ctx, sql, user.ID, user.Email, user.password) 
+	_, err := repo.db.ExecContext(ctx, sql, user.ID, user.Email, user.Password) 
 		if err != nil {
 			return err;
 		}
@@ -38,9 +38,9 @@ func (repo*repo) CreateUser(ctx context.Context, user User) error {
 
 func (repo *repo) GetUser(ctx context.Context, id string) (string, error) {
 	var email string
-	err := repo.db.QueryRow("SELECT email from users WHERE id = $1", id).Scan(&email)
-	err != nil {
+	err := repo.db.QueryRow("SELECT email from user WHERE id = $1", id).Scan(&email)
+	if err != nil {
 		return "", RepoErr;
 	}
-	return email nil
+	return email, nil
 }
