@@ -81,11 +81,11 @@ func main() {
 
 	defer level.Info(logger).Log("msg", "service stopped")
 
-	var Database *sql.DB 
+	var db *sql.DB 
 	{
 		var err error
 		
-		Database, err = sql.Open("mysql", dbsource)
+		db, err = sql.Open("mysql", dbsource)
 		if err != nil {
 			level.Error(logger).Log("exit", err) 
 			os.Exit(-1)
@@ -97,7 +97,7 @@ func main() {
 	ctx := context.Background()
 	var srv account.Service
 	{
-		repository := account.NewRepo(Database, logger)
+		repository := account.NewRepo(db, logger)
 
 		srv = account.NewService(repository, logger)
 	}
