@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 
-	"log"
+	// "log"
 
 	"net/http"
 	"os"
@@ -16,41 +16,49 @@ import (
 	"gokit-example/account"
 
 	"github.com/go-kit/kit/log"
-	"gorm.io/gorm"
 
 	"github.com/go-kit/kit/log/level"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var Database *gorm.DB
+const dbsource = "mysql://root:admin@tcp(127.0.0.1:3306)/newdb/gokitexample?sslmode=disable"
+
+// var Database *gorm.DB
 
 func main() {
-	con, err := sql.Open("mysql", "root:admin@tcp(127.0.0.1:3306)/newdb")
-	if err != nil {
-		log.Fatal(err)
+	// var Database *sql.DB 
+	// {
+
+	// 	var err error
+
+	// con, err := sql.Open("mysql", "root:admin@tcp(127.0.0.1:3306)/newdb")
+	// if err != nil {
+	// 	log.Fatal(err)
 		
-	}
-	defer con.Close()
+	// }
+	// defer con.Close()
 
-	stmt, err := con.Prepare("select * from user where id=?")
-	if err != nil {
-		log.Fatal(err)
+	// stmt, err := con.Prepare("select * from user where id=?")
+	// if err != nil {
+	// 	log.Fatal(err)
 		
-	}
-	defer stmt.Close()
+	// }
+	// defer stmt.Close()
 
-	var pwd, email string
-	var id int
+	// var pwd, email string
+	// var id int
 
-	err = stmt.QueryRow(1234).Scan(&id, &email, &pwd)
-	if err != nil {
-		log.Fatal(err)
+	// err = stmt.QueryRow(1234).Scan(&id, &email, &pwd)
+	// if err != nil {
+	// 	log.Fatal(err)
 		
-	}
+	// }
 
 
-	fmt.Printf("ID: %d, Email: %s, Pwd: %s", id, email, pwd)
+	// fmt.Printf("ID: %d, Email: %s, Pwd: %s", id, email, pwd)
+	// }
 
+	
 
 	var httpAddr = flag.String("http", ":8080", "http listen address")
 	var logger log.Logger
@@ -73,15 +81,28 @@ func main() {
 
 	defer level.Info(logger).Log("msg", "service stopped")
 
+	var Database *sql.DB 
+	{
+		var err error
+		
+		Database, err = sql.Open("mysql", dbsource)
+		if err != nil {
+			level.Error(logger).Log("exit", err) 
+			os.Exit(-1)
+		}
+	}
+
 	flag.Parse()
 	ctx := context.Background()
 	var srv account.Service
 	{
 		repository := account.NewRepo(Database, logger)
+
 		srv = account.NewService(repository, logger)
 	}
 
 	errs := make(chan error)
+
 	go func() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
