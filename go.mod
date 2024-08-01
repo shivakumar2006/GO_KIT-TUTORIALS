@@ -13,9 +13,5 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 // indirect
-	golang.org/x/text v0.16.0 // indirect
-	gorm.io/gorm v1.25.11 // direct
 )
