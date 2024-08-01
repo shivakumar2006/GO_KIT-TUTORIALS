@@ -1,20 +1,24 @@
 package main
 
-import(
-	"database/sql"
+import (
 	"context"
-	"log"
+	"database/sql"
 	"flag"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-kit/kit/log/level"
-	"github.com/go-kit/kit/log"
-	"os"
-	"syscall"
-	"os/signal"
+
+	// "log"
+
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"gokit-example/account"
+
+	"github.com/go-kit/kit/log"
+
+	"github.com/go-kit/kit/log/level"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 
@@ -42,7 +46,9 @@ func main() {
 		
 	}
 
+
 	fmt.Printf("ID: %d, Email: %s, Pwd: %s", id, email, pwd)
+
 
 	var httpAddr = flag.String("http", ":8080", "http listen address")
 	var logger log.Logger
@@ -73,11 +79,11 @@ func main() {
 		srv = account.NewService(repository, logger)
 	}
 
-	errs = make(chan error)
+	errs := make(chan error)
 	go func() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-		errs <- fmt.Error("%s", <-c)
+		errs <- fmt.Errorf("%s", <-c)
 	}()
 
 	endpoints := account.MakeEndpoints(srv)
@@ -90,8 +96,8 @@ func main() {
 
 	level.Error(logger).Log("exit", <-errs)
 	
+	}
 	
- }
 
 // func getHealth(w http.ResponseWriter, r *http.Request) (string) {
 // 	return "200 OK"

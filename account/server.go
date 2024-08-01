@@ -17,16 +17,17 @@ func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
 		encodeResponse,
 	))
 
-	r.Methods("GET").Path("/user/{id}").handler(httpteransport.NewServer (
+	r.Methods("GET").Path("/user/{id}").Handler(httptransport.NewServer (
 		endpoints.GetUser,
 		decodeEmailReq,
 		encodeResponse,
 	))
+	return r
 }
 
-func CommonMiddleWear(next http.handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResonseWriter, r *http.Request) {
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("content-type", "appliction/json")
-		ext.serveHTTP(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
