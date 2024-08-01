@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 
-	// "log"
+	"log"
 
 	"net/http"
 	"os"
@@ -16,11 +16,13 @@ import (
 	"gokit-example/account"
 
 	"github.com/go-kit/kit/log"
+	"gorm.io/gorm"
 
 	"github.com/go-kit/kit/log/level"
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var Database *gorm.DB
 
 func main() {
 	con, err := sql.Open("mysql", "root:admin@tcp(127.0.0.1:3306)/newdb")
@@ -75,7 +77,7 @@ func main() {
 	ctx := context.Background()
 	var srv account.Service
 	{
-		repository := account.NewRepo(db, logger)
+		repository := account.NewRepo(Database, logger)
 		srv = account.NewService(repository, logger)
 	}
 
